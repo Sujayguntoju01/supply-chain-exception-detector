@@ -26,15 +26,20 @@ An end-to-end ML pipeline that flags **order items likely to ship late** and **o
 
 ## Results
 
-Results on the full DataCo dataset (20% stratified hold-out), from `models/metrics.json` after `make train`:
+Full DataCo dataset, 20% stratified hold-out (`models/metrics.json`):
 
 | Metric | Value |
 |---|---|
-| Order items | _run `make train`_ |
-| Late-delivery precision | _…_ |
-| Late-delivery recall | _…_ |
-| ROC AUC | _…_ |
-| Orders flagged as exceptions | _…_ |
+| Order items after cleaning | **176,827** |
+| Share delivered late | 56.0% |
+| Late-delivery **precision** | **86.8%** |
+| Late-delivery recall | 59.7% |
+| F1 | 0.707 |
+| ROC AUC | 0.795 |
+| Orders flagged as exceptions | 3,537 (2.0%) |
+| Median profit ratio of flagged orders | −0.83 (loss-making) |
+
+The classifier favors precision: when it flags an order as at risk, it's right about 87% of the time. Lowering `LATE_THRESHOLD` catches more late orders at the cost of more false alarms. The exception detector surfaces a small set of loss-making orders with unusual discounts and margins for review.
 
 ## Quick start
 
