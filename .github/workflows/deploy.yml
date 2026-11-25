@@ -1,0 +1,32 @@
+name: Deploy to AWS EC2
+
+# Runs only after you set the repository variable DEPLOY_ENABLED=true and add
+# the secrets listed in the README (EC2_HOST, EC2_USER, EC2_SSH_KEY, MODEL_S3_URI).
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    if: vars.DEPLOY_ENABLED == 'true' && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull, rebuild and restart the API on EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd ~/supply-chain-exception-detector
+            git pull --ff-only
+            docker build -t supply-chain-exception-detector .
+            docker rm -f api || true
+            docker run -d --name api --restart unless-stopped -p 80:8000 \
+              -e MODEL_S3_URI='${{ secrets.MODEL_S3_URI }}' \
+              supply-chain-exception-detector
+            sleep 5 && curl -sf localhost/health
