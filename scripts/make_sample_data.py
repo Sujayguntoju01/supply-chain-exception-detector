@@ -84,5 +84,5 @@ if __name__ == "__main__":
     parser.add_argument("--rows", type=int, default=3000)
     parser.add_argument("--out", default="data/sample_orders.csv")
     args = parser.parse_args()
-    make(args.rows).to_csv(args.out, index=False, encoding="latin-1")
+    make(args.rows).to_csv(args.out, index=False, encoding="cp1252")
     print(f"Wrote {args.rows} synthetic rows to {args.out}")

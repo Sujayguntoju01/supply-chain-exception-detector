@@ -16,7 +16,7 @@ An end-to-end ML pipeline that flags **order items likely to ship late** and **o
 
 | Stage | What happens | Code |
 |---|---|---|
-| Ingest | Raw CSV (latin-1) loaded into DuckDB | `src/supply_chain/data.py` |
+| Ingest | Raw CSV (Windows-1252) decoded with pandas and loaded into DuckDB | `src/supply_chain/data.py` |
 | Clean | SQL renames columns, parses timestamps, drops cancelled orders, de-duplicates order items | `sql/clean_orders.sql` |
 | Features | Order month, weekday and hour; one-hot shipping mode, market, region, segment and category | `src/supply_chain/features.py` |
 | Late-delivery model | `HistGradientBoostingClassifier` using only order-time features (no leakage from actual shipping days) | `src/supply_chain/train.py` |

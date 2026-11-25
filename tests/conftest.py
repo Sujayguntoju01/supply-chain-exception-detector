@@ -12,7 +12,7 @@ from make_sample_data import make  # noqa: E402
 @pytest.fixture(scope="session")
 def sample_csv(tmp_path_factory) -> Path:
     path = tmp_path_factory.mktemp("data") / "sample.csv"
-    make(1500, seed=1).to_csv(path, index=False, encoding="latin-1")
+    make(1500, seed=1).to_csv(path, index=False, encoding="cp1252")
     return path
 
 
